@@ -117,10 +117,10 @@ public class PortfolioManagerApplication {
   public static List<String> debugOutputs() {
 
      String valueOfArgument0 = "trades.json";
-     String resultOfResolveFilePathArgs0 = "";
-     String toStringOfObjectMapper = "";
-     String functionNameFromTestFileInStackTrace = "";
-     String lineNumberFromTestFileInStackTrace = "";
+     String resultOfResolveFilePathArgs0 = "/home/crio-user/workspace/hgoel107-ME_QMONEY_V2/qmoney/bin/main/trades.json";
+     String toStringOfObjectMapper = "com.fasterxml.jackson.databind.ObjectMapper@3bf7ca37";
+     String functionNameFromTestFileInStackTrace = "mainReadFile";
+     String lineNumberFromTestFileInStackTrace = "49";
 
 
     return Arrays.asList(new String[]{valueOfArgument0, resultOfResolveFilePathArgs0,
