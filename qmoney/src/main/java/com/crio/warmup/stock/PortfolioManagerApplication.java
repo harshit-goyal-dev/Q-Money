@@ -140,6 +140,54 @@ public class PortfolioManagerApplication {
 
   // Note:
   // Remember to confirm that you are getting same results for annualized returns as in Module 3.
+  public static List<String> mainReadQuotes(String[] args) throws IOException, URISyntaxException {
+    List<String> symbolList = mainReadFile((args));
+    List<TotalReturnsDto> list = new ArrayList<>();
+    String fileName = args[0];
+    File file = resolveFileFromResources(fileName);
+    LocalDate endDate = LocalDate.parse(args[1]);
+    String token = "97c5e06e483aa89f0b67373c3a80db1ac13b69f2";
+    ObjectMapper objectMapper = getObjectMapper();
+    PortfolioTrade[] portfolioTrades = objectMapper.readValue(file, PortfolioTrade[].class);
+    for (PortfolioTrade portfolioTrade : portfolioTrades) {
+      String url = prepareUrl(portfolioTrade, endDate, token);
+      RestTemplate restTemplate = new RestTemplate();
+      TiingoCandle[] response = restTemplate.getForObject(url, TiingoCandle[].class);
+      TiingoCandle candle = response[response.length-1];
+      list.add(new TotalReturnsDto(portfolioTrade.getSymbol(), candle.getClose()));
+    }
+    Collections.sort(list,(a,b)-> a.getClosingPrice().intValue()-b.getClosingPrice().intValue());
+    //Arrays.sort(response,(TiingoCandle a,TiingoCandle b)-> a.getClose()- b.getClose());
+    
+     List<String> ans = new ArrayList<>();
+     list.forEach(entry-> ans.add(entry.getSymbol()));
+    return ans;
+  }
+
+  // TODO:
+  //  After refactor, make sure that the tests pass by using these two commands
+  //  ./gradlew test --tests PortfolioManagerApplicationTest.readTradesFromJson
+  //  ./gradlew test --tests PortfolioManagerApplicationTest.mainReadFile
+  public static List<PortfolioTrade> readTradesFromJson(String filename) throws IOException, URISyntaxException {
+     return Collections.emptyList();
+  }
+
+
+  // TODO:
+  //  Build the Url using given parameters and use this function in your code to cann the API.
+  public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String token) {
+     String startDate = trade.getPurchaseDate().toString();
+     String end = endDate.toString();
+     String symbol = trade.getSymbol();
+     return "https://api.tiingo.com/tiingo/daily/"+symbol+"/prices?startDate="+startDate+"&endDate="+end+"&token="+token;
+  }
+
+
+
+
+
+
+
 
 
 
@@ -147,7 +195,7 @@ public class PortfolioManagerApplication {
     Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
     ThreadContext.put("runId", UUID.randomUUID().toString());
 
-    printJsonObject(mainReadFile(args));
+    printJsonObject(mainReadQuotes(args));
 
 
 
