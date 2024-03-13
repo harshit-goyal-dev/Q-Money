@@ -237,7 +237,7 @@ public class PortfolioManagerApplication {
           // TiingoCandle candle = response[response.length-1];
           // list.add(new TotalReturnsDto(portfolioTrade.getSymbol(), candle.getClose()));
         }
-        Collections.sort(ans,(a,b)-> b.getAnnualizedReturn().intValue() - a.getAnnualizedReturn().intValue());
+        Collections.sort(ans,(a,b)-> Double.compare(b.getAnnualizedReturn(), a.getAnnualizedReturn()));
         return ans;
   }
 
