@@ -59,10 +59,6 @@ public class PortfolioManagerApplication {
      return symbols;
   }
 
-
-
-
-
   // TODO: CRIO_TASK_MODULE_CALCULATIONS
   //  Now that you have the list of PortfolioTrade and their data, calculate annualized returns
   //  for the stocks provided in the Json.
@@ -72,10 +68,6 @@ public class PortfolioManagerApplication {
   // Note:
   // 1. You may need to copy relevant code from #mainReadQuotes to parse the Json.
   // 2. Remember to get the latest quotes from Tiingo API.
-
-
-
-
 
 
   // Note:
