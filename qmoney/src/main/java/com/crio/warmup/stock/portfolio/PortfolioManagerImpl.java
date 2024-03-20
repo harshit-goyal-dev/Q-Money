@@ -58,13 +58,18 @@ public class PortfolioManagerImpl implements PortfolioManager {
   public List<AnnualizedReturn> calculateAnnualizedReturn(List<PortfolioTrade> portfolioTrades,
   LocalDate endDate) throws JsonProcessingException{
     List<AnnualizedReturn> ans = new ArrayList<>();
-    for (PortfolioTrade portfolioTrade : portfolioTrades) {
-      List<Candle> candleList = getStockQuote(portfolioTrade.getSymbol(), portfolioTrade.getPurchaseDate(), endDate);
-      Double buyPrice = getOpeningPriceOnStartDate(candleList);
-      Double sellPrice = getClosingPriceOnEndDate(candleList);
-      AnnualizedReturn annualizedReturn = calculateAnnualizedReturns(endDate, portfolioTrade, buyPrice, sellPrice);
-      ans.add(annualizedReturn);
+    try{
+      for (PortfolioTrade portfolioTrade : portfolioTrades) {
+        List<Candle> candleList = getStockQuote(portfolioTrade.getSymbol(), portfolioTrade.getPurchaseDate(), endDate);
+        Double buyPrice = getOpeningPriceOnStartDate(candleList);
+        Double sellPrice = getClosingPriceOnEndDate(candleList);
+        AnnualizedReturn annualizedReturn = calculateAnnualizedReturns(endDate, portfolioTrade, buyPrice, sellPrice);
+        ans.add(annualizedReturn);
+      }
     }
+   catch(Exception exception){
+    exception.printStackTrace();
+   }
     Collections.sort(ans, getComparator());
     return ans;
   }

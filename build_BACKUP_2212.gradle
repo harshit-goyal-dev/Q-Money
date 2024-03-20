@@ -77,6 +77,8 @@ subprojects {
 
 compileJava.dependsOn clean
 
+<<<<<<< HEAD
+=======
 
 task cleanupCrioJars {
     doLast {
@@ -112,3 +114,4 @@ task verifyMavenJarsCreated {
     }
 }
 
+>>>>>>> 281bb3ef0aabb05f0988a6d70dd8357f9110b1b7
