@@ -8,6 +8,7 @@ import com.crio.warmup.stock.dto.AnnualizedReturn;
 import com.crio.warmup.stock.dto.Candle;
 import com.crio.warmup.stock.dto.PortfolioTrade;
 import com.crio.warmup.stock.dto.TiingoCandle;
+import com.crio.warmup.stock.quotes.StockQuotesService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -29,15 +30,25 @@ import org.springframework.web.client.RestTemplate;
 
 public class PortfolioManagerImpl implements PortfolioManager {
 
+
+  private  StockQuotesService stockQuotesService ;
+
   private RestTemplate restTemplate;
-  private String getToken() {
-    return "97c5e06e483aa89f0b67373c3a80db1ac13b69f2";
-  }
+
+  // private String getToken() {
+  //   return "97c5e06e483aa89f0b67373c3a80db1ac13b69f2";
+  // }
 
   // Caution: Do not delete or modify the constructor, or else your build will break!
   // This is absolutely necessary for backward compatibility
+  @Deprecated
   protected PortfolioManagerImpl(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
+  }
+
+  public PortfolioManagerImpl(StockQuotesService stockQuotesService)
+  {
+    this.stockQuotesService = stockQuotesService ;
   }
 
 
@@ -56,11 +67,11 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
 
   public List<AnnualizedReturn> calculateAnnualizedReturn(List<PortfolioTrade> portfolioTrades,
-  LocalDate endDate) throws JsonProcessingException{
+  LocalDate endDate){
     List<AnnualizedReturn> ans = new ArrayList<>();
     try{
       for (PortfolioTrade portfolioTrade : portfolioTrades) {
-        List<Candle> candleList = getStockQuote(portfolioTrade.getSymbol(), portfolioTrade.getPurchaseDate(), endDate);
+        List<Candle> candleList = stockQuotesService.getStockQuote(portfolioTrade.getSymbol(), portfolioTrade.getPurchaseDate(), endDate);
         Double buyPrice = getOpeningPriceOnStartDate(candleList);
         Double sellPrice = getClosingPriceOnEndDate(candleList);
         AnnualizedReturn annualizedReturn = calculateAnnualizedReturns(endDate, portfolioTrade, buyPrice, sellPrice);
@@ -110,17 +121,26 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
       throws JsonProcessingException {
-      List<Candle> ans = new ArrayList<>();
-      String url = buildUri(symbol, from, to);
-      TiingoCandle[] response = restTemplate.getForObject(url, TiingoCandle[].class);
-      ans = Arrays.asList(response);
-      return ans;
+      // List<Candle> ans = new ArrayList<>();
+      // String url = buildUri(symbol, from, to);
+      // TiingoCandle[] response = restTemplate.getForObject(url, TiingoCandle[].class);
+      // ans = Arrays.asList(response);
+      // return ans;
+      return stockQuotesService.getStockQuote(symbol, from, to);
   }
 
-  protected String buildUri(String symbol, LocalDate startDate, LocalDate endDate) {
-    String token = getToken();
-    String uriTemplate = "https:api.tiingo.com/tiingo/daily/$SYMBOL/prices?"
-                        + "startDate="+startDate+"&endDate="+endDate+"&token="+token;
-    return uriTemplate;
-  }
+  // protected String buildUri(String symbol, LocalDate startDate, LocalDate endDate) {
+  //   String token = getToken();
+  //   String uriTemplate = "https:api.tiingo.com/tiingo/daily/$SYMBOL/prices?"
+  //                       + "startDate="+startDate+"&endDate="+endDate+"&token="+token;
+  //   return uriTemplate;
+  // }
+
+
+  // ¶TODO: CRIO_TASK_MODULE_ADDITIONAL_REFACTOR
+  //  Modify the function #getStockQuote and start delegating to calls to
+  //  stockQuoteService provided via newly added constructor of the class.
+  //  You also have a liberty to completely get rid of that function itself, however, make sure
+  //  that you do not delete the #getStockQuote function.
+
 }
