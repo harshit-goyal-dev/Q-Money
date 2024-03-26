@@ -61,6 +61,8 @@ public class AlphavantageService implements StockQuotesService {
     objectMapper.registerModule(new JavaTimeModule());
 
     String apiResponse = restTemplate.getForObject(url, String.class);
+    System.out.println(apiResponse);
+
     Map<LocalDate, AlphavantageCandle > dailyResponse =  objectMapper.readValue(apiResponse,AlphavantageDailyResponse.class).getCandles();
     LocalDate currDate = from;
     while(!currDate.isAfter(to)){
