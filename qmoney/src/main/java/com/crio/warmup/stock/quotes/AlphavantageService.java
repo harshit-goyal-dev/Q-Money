@@ -6,6 +6,10 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import com.crio.warmup.stock.dto.AlphavantageCandle;
 import com.crio.warmup.stock.dto.AlphavantageDailyResponse;
 import com.crio.warmup.stock.dto.Candle;
+
+import com.crio.warmup.stock.dto.AlphavantageDailyResponse;
+import com.crio.warmup.stock.dto.Candle;
+import com.crio.warmup.stock.exception.StockQuoteServiceException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -53,7 +57,7 @@ public class AlphavantageService implements StockQuotesService {
   //  1. Write a method to create appropriate url to call Alphavantage service. The method should
   //     be using configurations provided in the {@link @application.properties}.
   //  2. Use this method in #getStockQuote.
-  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException{
+  public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to) throws JsonProcessingException,StockQuoteServiceException{
     List<Candle> ans  = new ArrayList<>();
     String url = buildUri(symbol);
    
@@ -61,9 +65,11 @@ public class AlphavantageService implements StockQuotesService {
     objectMapper.registerModule(new JavaTimeModule());
 
     String apiResponse = restTemplate.getForObject(url, String.class);
-    System.out.println(apiResponse);
+    if(apiResponse ==null || apiResponse=="")throw new StockQuoteServiceException("Failed to fetch reponse");
+    //System.out.println(apiResponse);
 
     Map<LocalDate, AlphavantageCandle > dailyResponse =  objectMapper.readValue(apiResponse,AlphavantageDailyResponse.class).getCandles();
+    if(dailyResponse ==null)throw new StockQuoteServiceException("Response is incorrectly formatted");
     LocalDate currDate = from;
     while(!currDate.isAfter(to)){
       if(dailyResponse.containsKey(currDate)){
@@ -86,7 +92,15 @@ public class AlphavantageService implements StockQuotesService {
     return uriTemplate;
   }
   private String getAPIKey() {
-    return "97c5e06e483aa89f0b67373c3a80db1ac13b69f2";
+    return "AKBDCIK00L3UDHK0";
   }
+  // TODO: CRIO_TASK_MODULE_EXCEPTIONS
+  //   1. Update the method signature to match the signature change in the interface.
+  //   2. Start throwing new StockQuoteServiceException when you get some invalid response from
+  //      Alphavantage, or you encounter a runtime exception during Json parsing.
+  //   3. Make sure that the exception propagates all the way from PortfolioManager, so that the
+  //      external user's of our API are able to explicitly handle this exception upfront.
+  //CHECKSTYLE:OFF
+
 }
 

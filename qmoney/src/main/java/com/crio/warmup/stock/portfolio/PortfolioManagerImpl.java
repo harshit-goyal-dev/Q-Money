@@ -8,6 +8,7 @@ import com.crio.warmup.stock.dto.AnnualizedReturn;
 import com.crio.warmup.stock.dto.Candle;
 import com.crio.warmup.stock.dto.PortfolioTrade;
 import com.crio.warmup.stock.dto.TiingoCandle;
+import com.crio.warmup.stock.exception.StockQuoteServiceException;
 import com.crio.warmup.stock.quotes.StockQuotesService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +43,10 @@ public class PortfolioManagerImpl implements PortfolioManager {
   // Caution: Do not delete or modify the constructor, or else your build will break!
   // This is absolutely necessary for backward compatibility
   @Deprecated
+
+
+  // Caution: Do not delete or modify the constructor, or else your build will break!
+  // This is absolutely necessary for backward compatibility
   protected PortfolioManagerImpl(RestTemplate restTemplate) {
     this.restTemplate = restTemplate;
   }
@@ -120,7 +125,7 @@ public class PortfolioManagerImpl implements PortfolioManager {
 
 
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
-      throws JsonProcessingException {
+      throws JsonProcessingException,StockQuoteServiceException {
       // List<Candle> ans = new ArrayList<>();
       // String url = buildUri(symbol, from, to);
       // TiingoCandle[] response = restTemplate.getForObject(url, TiingoCandle[].class);
@@ -142,5 +147,18 @@ public class PortfolioManagerImpl implements PortfolioManager {
   //  stockQuoteService provided via newly added constructor of the class.
   //  You also have a liberty to completely get rid of that function itself, however, make sure
   //  that you do not delete the #getStockQuote function.
+
+
+
+
+
+
+
+  // private Comparator<AnnualizedReturn> getComparator() {
+  //   return Comparator.comparing(AnnualizedReturn::getAnnualizedReturn).reversed();
+  // }
+
+
+
 
 }

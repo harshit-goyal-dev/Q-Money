@@ -46,6 +46,15 @@ public class PortfolioManagerApplication {
   //  1. There can be few unused imports, you will need to fix them to make the build pass.
   //  2. You can use "./gradlew build" to check if your code builds successfully.
 
+  public static void main(String[] args) throws Exception {
+    Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
+    ThreadContext.put("runId", UUID.randomUUID().toString());
+
+   // printJsonObject(mainReadQuotes(args));
+   // printJsonObject(mainCalculateSingleReturn(args));
+    printJsonObject(mainCalculateReturnsAfterRefactor(args));
+
+  }
   public static List<String> mainReadFile(String[] args) throws IOException, URISyntaxException {
     List<String> symbols = new ArrayList<>();
     String fileName = args[0];
@@ -285,20 +294,7 @@ private static String readFileAsString(String fileName) throws URISyntaxExceptio
        PortfolioTrade[] portfolioTrades = objectMapper.readValue(contents, PortfolioTrade[].class);
        return portfolioManager.calculateAnnualizedReturn(Arrays.asList(portfolioTrades), endDate);
   }
-
-
-  public static void main(String[] args) throws Exception {
-    Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
-    ThreadContext.put("runId", UUID.randomUUID().toString());
-
-   // printJsonObject(mainReadQuotes(args));
-   // printJsonObject(mainCalculateSingleReturn(args));
-    printJsonObject(mainCalculateReturnsAfterRefactor(args));
-
-  }
-
   public static String getToken() {
     return "97c5e06e483aa89f0b67373c3a80db1ac13b69f2";
   }
 }
-

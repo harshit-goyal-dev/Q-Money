@@ -34,4 +34,12 @@ public class PortfolioManagerFactory {
      return new PortfolioManagerImpl(stockQuotesService);
    }
 
+
+  // public static PortfolioManager getPortfolioManager(RestTemplate restTemplate) {
+
+  // }
+
+
+
+
 }

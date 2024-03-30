@@ -28,4 +28,7 @@ public enum StockQuoteServiceFactory {
 
     else return new AlphavantageService(restTemplate);
   }
+  // public StockQuotesService getService(String provider,  RestTemplate restTemplate) {
+
+  // }
 }
